@@ -41,7 +41,7 @@ export default function FileUploader({ onFileSelect, fileInfo, disabled }: FileU
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
-        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+        className={`border-2 border-dashed rounded-lg p-16 text-center transition-colors ${
           disabled
             ? 'border-gray-300 bg-gray-50 cursor-not-allowed'
             : 'border-primary-500 bg-primary-50 hover:bg-primary-100 cursor-pointer'

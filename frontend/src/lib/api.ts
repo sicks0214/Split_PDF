@@ -1,7 +1,11 @@
 import axios from 'axios';
 import { SplitConfig } from '@/types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001';
+// 在生产环境使用相对路径（通过 Nginx 代理），开发环境使用完整 URL
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ||
+  (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+    ? ''
+    : 'http://localhost:4001');
 
 export async function splitPDF(file: File, config: SplitConfig): Promise<Blob> {
   const formData = new FormData();
@@ -20,7 +24,7 @@ export async function splitPDF(file: File, config: SplitConfig): Promise<Blob> {
 
   formData.append('commands', commands);
 
-  const response = await axios.post(`${API_URL}/api/pdf/split`, formData, {
+  const response = await axios.post(`${API_BASE_URL}/api/pdf/split`, formData, {
     responseType: 'blob',
     headers: {
       'Content-Type': 'multipart/form-data'
@@ -33,7 +37,7 @@ export async function splitPDF(file: File, config: SplitConfig): Promise<Blob> {
 
 export async function checkHealth(): Promise<boolean> {
   try {
-    const response = await axios.get(`${API_URL}/api/pdf/health`);
+    const response = await axios.get(`${API_BASE_URL}/api/pdf/health`);
     return response.data.success === true;
   } catch {
     return false;

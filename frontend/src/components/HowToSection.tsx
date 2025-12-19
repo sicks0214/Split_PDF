@@ -24,7 +24,7 @@ export default function HowToSection() {
 
   return (
     <section className="w-full py-16 bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-6xl mx-auto px-4">
         <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
           How to Split PDF
         </h2>

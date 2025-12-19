@@ -20,7 +20,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 路由
-app.use('/api/pdf', splitRoutes);
+// 注意：在 VPS 环境下，Nginx 会将 /api/pdf/* 代理到 4001端口并去除 /api/pdf 前缀
+// 所以这里直接使用根路径，而不是 /api/pdf
+app.use('/', splitRoutes);
 
 // 根路径
 app.get('/', (req, res) => {
@@ -29,9 +31,10 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     status: 'running',
     endpoints: {
-      split: 'POST /api/pdf/split',
-      health: 'GET /api/pdf/health'
-    }
+      split: 'POST /split',
+      health: 'GET /health'
+    },
+    note: 'In production, access via /api/pdf/* through Nginx proxy'
   });
 });
 
@@ -49,8 +52,10 @@ app.listen(PORT, () => {
   console.log('✅ Split PDF Backend Service');
   console.log(`📡 Server running on port ${PORT}`);
   console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`📝 API: http://localhost:${PORT}/api/pdf`);
-  console.log(`💚 Health check: http://localhost:${PORT}/api/pdf/health`);
+  console.log(`📝 API endpoints:`);
+  console.log(`   - POST http://localhost:${PORT}/split`);
+  console.log(`   - GET  http://localhost:${PORT}/health`);
+  console.log(`💚 Production: Access via /api/pdf/* through Nginx`);
 });
 
 export default app;

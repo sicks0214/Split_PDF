@@ -113,11 +113,11 @@ export default function Home() {
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 py-6">
-          <nav className="text-sm text-gray-600 mb-2">
+          <nav className="text-sm text-gray-600 mb-4 text-center">
             <span>Home</span> / <span>PDF Tools</span> / <span className="text-gray-900">Split PDF</span>
           </nav>
-          <h1 className="text-4xl font-bold text-gray-900">Split PDF</h1>
-          <p className="text-gray-600 mt-2">Split your PDF files by page range, fixed pages, or extract specific pages</p>
+          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 text-center mb-4">Split PDF</h1>
+          <p className="text-lg text-gray-600 text-center max-w-3xl mx-auto">Split your PDF files by page range, fixed pages, or extract specific pages</p>
         </div>
       </header>
 
