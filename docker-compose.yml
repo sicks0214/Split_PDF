@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # 后端服务 - Split PDF API
+  backend-split:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: toolibox/backend-split:latest
+    container_name: split-pdf-backend
+    restart: always
+    ports:
+      - "4001:4001"
+    environment:
+      - NODE_ENV=production
+      - PORT=4001
+      - CORS_ORIGIN=*
+      - MAX_FILE_SIZE=52428800
+    networks:
+      - split-pdf-network
+
+  # 前端服务 - Split PDF UI
+  frontend-split:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: toolibox/frontend-split:latest
+    container_name: split-pdf-frontend
+    restart: always
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://backend-split:4001
+    depends_on:
+      - backend-split
+    networks:
+      - split-pdf-network
+
+networks:
+  split-pdf-network:
+    driver: bridge
