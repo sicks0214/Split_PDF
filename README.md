@@ -10,9 +10,15 @@
   - 🎯 提取指定页面（1, 3, 7）
 
 - ✅ **技术栈**
-  - 前端：Next.js 14 + TypeScript + Tailwind CSS
-  - 后端：Express + TypeScript + pdf-lib
-  - 部署：Docker + Docker Compose
+  - 纯前端：Next.js 14 + TypeScript + Tailwind CSS
+  - 客户端处理：pdf-lib + jszip
+  - 国际化：next-intl（中英双语）
+  - 部署：Docker
+
+- ✅ **隐私安全**
+  - 文件完全在浏览器中处理
+  - 不上传到服务器
+  - 无需后端服务
 
 - ✅ **SEO 优化**
   - 完整的 How-to 教程
@@ -22,25 +28,49 @@
 ## 项目结构
 
 ```
-split-pdf-tool/
-├── frontend/               # Next.js 前端应用
+Split_PDF/
+├── frontend/                    # Next.js 前端应用
 │   ├── src/
-│   │   ├── app/           # 页面和布局
-│   │   ├── components/    # React 组件
-│   │   ├── lib/           # API 调用
-│   │   └── types/         # TypeScript 类型
+│   │   ├── app/
+│   │   │   ├── [locale]/       # 国际化路由
+│   │   │   │   ├── layout.tsx  # 根布局
+│   │   │   │   ├── page.tsx    # 首页（重定向）
+│   │   │   │   └── split-pdf/
+│   │   │   │       └── page.tsx # 工具主页面
+│   │   │   └── globals.css
+│   │   ├── components/
+│   │   │   ├── layout/
+│   │   │   │   ├── Header.tsx   # 页头（Logo + 语言切换）
+│   │   │   │   └── Footer.tsx   # 页脚
+│   │   │   ├── Breadcrumb.tsx   # 面包屑导航
+│   │   │   ├── FileUploader.tsx # 文件上传
+│   │   │   ├── ModeSelector.tsx # 模式选择
+│   │   │   ├── ParameterInput.tsx # 参数输入
+│   │   │   ├── HowToSection.tsx # 使用说明
+│   │   │   ├── FAQSection.tsx   # FAQ
+│   │   │   └── UsageScenariosSection.tsx # 使用场景
+│   │   ├── lib/
+│   │   │   └── pdfSplitter.ts   # PDF 处理逻辑
+│   │   ├── locales/
+│   │   │   ├── en.json          # 英文翻译
+│   │   │   └── zh.json          # 中文翻译
+│   │   ├── i18n/
+│   │   │   └── request.ts       # i18n 配置
+│   │   ├── types/
+│   │   │   └── index.ts
+│   │   ├── config.ts            # locales 配置
+│   │   └── middleware.ts        # 路由中间件
+│   ├── public/
+│   │   └── .gitkeep
 │   ├── Dockerfile
+│   ├── next.config.js
+│   ├── tailwind.config.ts
 │   └── package.json
-├── backend/               # Express 后端 API
-│   ├── src/
-│   │   ├── routes/       # API 路由
-│   │   ├── controllers/  # 请求处理
-│   │   ├── services/     # PDF 处理逻辑
-│   │   ├── utils/        # 工具函数
-│   │   └── types/        # TypeScript 类型
-│   ├── Dockerfile
-│   └── package.json
-└── docker-compose.yml     # Docker 编排配置
+├── docs/                        # 文档
+│   └── REFACTOR_REPORT.md       # 重构报告
+├── docker-compose.yml
+├── .gitignore
+└── README.md
 ```
 
 ## 本地开发
@@ -49,21 +79,8 @@ split-pdf-tool/
 
 - Node.js 18+
 - npm 或 yarn
-- Docker 和 Docker Compose（可选）
 
-### 方式 1：分别运行前后端
-
-#### 1. 启动后端
-
-```bash
-cd backend
-npm install
-npm run dev
-```
-
-后端将运行在 `http://localhost:4001`
-
-#### 2. 启动前端
+### 启动开发服务器
 
 ```bash
 cd frontend
@@ -71,22 +88,31 @@ npm install
 npm run dev
 ```
 
-前端将运行在 `http://localhost:3002`
+访问：
+- 中文版：http://localhost:3001/pdf-tools/zh/split-pdf
+- 英文版：http://localhost:3001/pdf-tools/en/split-pdf
 
-### 方式 2：使用 Docker Compose
+## Docker 部署
+
+### 构建并启动
 
 ```bash
-# 构建并启动所有服务
 docker-compose up -d
+```
 
-# 查看日志
+### 查看日志
+
+```bash
 docker-compose logs -f
+```
 
-# 停止服务
+### 停止服务
+
+```bash
 docker-compose down
 ```
 
-访问 `http://localhost:3002` 查看应用。
+访问 `http://localhost:3001/pdf-tools/en/split-pdf`
 
 ## 部署到 VPS
 
@@ -101,7 +127,7 @@ docker-compose down
 
 ```bash
 # 打包项目
-tar -czf split-pdf-tool.tar.gz split-pdf-tool/
+tar -czf split-pdf-tool.tar.gz Split_PDF/
 
 # 上传到 VPS
 scp split-pdf-tool.tar.gz toolibox@82.29.67.124:/var/www/
@@ -115,7 +141,7 @@ tar -xzf split-pdf-tool.tar.gz
 ### 3. 构建 Docker 镜像
 
 ```bash
-cd /var/www/split-pdf-tool
+cd /var/www/Split_PDF
 
 # 构建镜像
 docker-compose build
@@ -132,19 +158,10 @@ docker ps
 在 `/etc/nginx/sites-available/toolibox.conf` 中添加：
 
 ```nginx
-# Split PDF 前端
-location /pdf-tools/split-pdf {
-    proxy_pass http://127.0.0.1:3002;
+location /pdf-tools/ {
+    proxy_pass http://127.0.0.1:3001;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
-}
-
-# Split PDF API
-location /api/pdf/split {
-    proxy_pass http://127.0.0.1:4001/api/pdf/split;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    client_max_body_size 50M;
 }
 ```
 
@@ -158,86 +175,54 @@ sudo systemctl reload nginx
 ### 5. 验证部署
 
 ```bash
-# 检查后端健康
-curl http://localhost:4001/api/pdf/health
-
 # 检查前端
-curl http://localhost:3002
+curl http://localhost:3001
 
 # 通过浏览器访问
-# http://82.29.67.124/pdf-tools/split-pdf
-```
-
-## API 文档
-
-### POST /api/pdf/split
-
-分割 PDF 文件。
-
-**请求格式：** `multipart/form-data`
-
-**参数：**
-- `file`: PDF 文件
-- `commands`: 命令字符串
-
-**命令格式：**
-
-```bash
-# 按范围分割
---mode range --range 1-3,5,8-10
-
-# 固定页数分割
---mode fixed --pages-per-file 5
-
-# 提取指定页
---mode extract --pages 1,3,7
-```
-
-**响应：**
-- 单个文件：直接返回 PDF
-- 多个文件：返回 ZIP 压缩包
-
-### GET /api/pdf/health
-
-健康检查端点。
-
-**响应：**
-```json
-{
-  "success": true,
-  "message": "Split PDF service is running",
-  "timestamp": "2024-01-01T00:00:00.000Z"
-}
+# http://82.29.67.124/pdf-tools/en/split-pdf
 ```
 
 ## 技术细节
 
-### 后端架构
+### 架构特点
 
-- **多阶段 Docker 构建**：优化镜像大小
-- **TypeScript 编译**：在构建阶段完成
-- **pdf-lib 库**：纯 JavaScript，无需外部依赖
-- **Multer**：处理文件上传
-- **Archiver**：生成 ZIP 文件
+- **纯前端处理**：使用 pdf-lib 在浏览器中处理 PDF
+- **隐私保护**：文件不离开用户设备
+- **国际化**：next-intl 支持中英双语
+- **微前端**：basePath 设置为 `/pdf-tools`
+- **多阶段构建**：Docker standalone 模式优化镜像大小
 
-### 前端架构
+### 核心依赖
 
-- **Next.js Standalone**：优化部署体积
-- **Tailwind CSS**：快速样式开发
-- **客户端组件**：交互式文件上传
-- **Axios**：API 请求处理
+```json
+{
+  "next": "^14.0.4",
+  "react": "^18.2.0",
+  "next-intl": "^3.0.0",
+  "pdf-lib": "^1.17.1",
+  "jszip": "^3.10.1"
+}
+```
+
+### PDF 处理流程
+
+1. 用户在浏览器中选择 PDF 文件
+2. 选择分割模式和参数
+3. pdf-lib 在客户端解析和分割 PDF
+4. 单个文件直接下载，多个文件打包为 ZIP
+5. 所有处理在浏览器内存中完成
 
 ## 故障排查
 
-### 后端容器无法启动
+### 前端容器无法启动
 
 ```bash
 # 查看日志
-docker logs split-pdf-backend
+docker logs split-pdf-frontend
 
 # 常见问题：
 # 1. 端口被占用 - 修改 docker-compose.yml 中的端口
-# 2. TypeScript 编译失败 - 检查 tsconfig.json 配置
+# 2. 构建失败 - 检查 public 目录是否存在
 ```
 
 ### 前端构建失败
@@ -253,13 +238,27 @@ npm install
 npm run build
 ```
 
-### CORS 错误
+### 语言切换不工作
 
-在 `backend/.env` 中设置：
+检查：
+1. middleware.ts 配置是否正确
+2. locales 文件是否存在
+3. URL 是否包含 locale 前缀（/en/ 或 /zh/）
 
-```
-CORS_ORIGIN=http://your-frontend-domain.com
-```
+## 符合规范
+
+本项目完全符合 Toolibox Tool Template v3.1 技术规范：
+
+- ✅ 国际化支持（next-intl）
+- ✅ 目录结构（app/[locale]/split-pdf/）
+- ✅ 配置文件（config.ts, middleware.ts, i18n/request.ts）
+- ✅ 翻译文件（locales/en.json, locales/zh.json）
+- ✅ 布局组件（Header, Footer, Breadcrumb）
+- ✅ basePath 设置为 /pdf-tools
+- ✅ 端口号为 3001
+- ✅ 客户端处理（pdf-lib）
+
+详细重构报告请查看：[docs/REFACTOR_REPORT.md](docs/REFACTOR_REPORT.md)
 
 ## 许可证
 
