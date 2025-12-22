@@ -1,6 +1,15 @@
 'use client';
 
-import { SplitMode, SplitConfig } from '@/types';
+import { useTranslations } from 'next-intl';
+
+type SplitMode = 'range' | 'fixed' | 'extract';
+
+interface SplitConfig {
+  mode: SplitMode;
+  range?: string;
+  pagesPerFile?: number;
+  pages?: string;
+}
 
 interface ParameterInputProps {
   mode: SplitMode;
@@ -10,6 +19,7 @@ interface ParameterInputProps {
 }
 
 export default function ParameterInput({ mode, config, onConfigChange, disabled }: ParameterInputProps) {
+  const t = useTranslations('split-pdf.parameters');
   const handleRangeChange = (value: string) => {
     onConfigChange({ ...config, range: value });
   };
@@ -30,19 +40,19 @@ export default function ParameterInput({ mode, config, onConfigChange, disabled 
       {mode === 'range' && (
         <div>
           <label htmlFor="range-input" className="block text-sm font-medium text-gray-700 mb-2">
-            Page Range
+            {t('rangeLabel')}
           </label>
           <input
             id="range-input"
             type="text"
-            placeholder="e.g., 1-3, 5, 8-10"
+            placeholder={t('rangePlaceholder')}
             value={config.range || ''}
             onChange={(e) => handleRangeChange(e.target.value)}
             disabled={disabled}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
           />
           <p className="mt-2 text-sm text-gray-600">
-            Enter page ranges separated by commas. Use hyphen for ranges (e.g., 1-3, 5, 8-10)
+            {t('rangeHelp')}
           </p>
         </div>
       )}
@@ -50,20 +60,20 @@ export default function ParameterInput({ mode, config, onConfigChange, disabled 
       {mode === 'fixed' && (
         <div>
           <label htmlFor="pages-per-file" className="block text-sm font-medium text-gray-700 mb-2">
-            Pages Per File
+            {t('fixedLabel')}
           </label>
           <input
             id="pages-per-file"
             type="number"
             min="1"
-            placeholder="e.g., 5"
+            placeholder={t('fixedPlaceholder')}
             value={config.pagesPerFile || ''}
             onChange={(e) => handlePagesPerFileChange(e.target.value)}
             disabled={disabled}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
           />
           <p className="mt-2 text-sm text-gray-600">
-            The PDF will be split into parts with this many pages each
+            {t('fixedHelp')}
           </p>
         </div>
       )}
@@ -71,19 +81,19 @@ export default function ParameterInput({ mode, config, onConfigChange, disabled 
       {mode === 'extract' && (
         <div>
           <label htmlFor="pages-input" className="block text-sm font-medium text-gray-700 mb-2">
-            Page Numbers
+            {t('extractLabel')}
           </label>
           <input
             id="pages-input"
             type="text"
-            placeholder="e.g., 1, 3, 7"
+            placeholder={t('extractPlaceholder')}
             value={config.pages || ''}
             onChange={(e) => handlePagesChange(e.target.value)}
             disabled={disabled}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
           />
           <p className="mt-2 text-sm text-gray-600">
-            Enter specific page numbers separated by commas (e.g., 1, 3, 7)
+            {t('extractHelp')}
           </p>
         </div>
       )}

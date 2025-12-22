@@ -1,42 +1,26 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const t = useTranslations('split-pdf.faq');
 
   const faqs = [
-    {
-      question: 'Is Split PDF free?',
-      answer: 'Yes, Split PDF is completely free to use. There are no hidden fees or subscription requirements.'
-    },
-    {
-      question: 'Are my files secure?',
-      answer: 'Yes, your files are processed securely. We do not store your files on our servers after processing, and all transfers are encrypted.'
-    },
-    {
-      question: 'Can I split large PDF files?',
-      answer: 'Yes, you can split PDF files up to 50MB in size. For larger files, you may need to compress them first or split them in multiple operations.'
-    },
-    {
-      question: 'Can I extract multiple page ranges?',
-      answer: 'Yes, using the "By Page Range" mode, you can specify multiple ranges like 1-3, 5, 8-10 to create separate PDF files for each range.'
-    },
-    {
-      question: 'Will my original file be preserved?',
-      answer: 'Yes, the split operation creates new files and does not modify your original PDF. Your source file remains unchanged.'
-    },
-    {
-      question: 'Can I split encrypted PDFs?',
-      answer: 'If the PDF is password-protected, you may need to remove the password first before splitting. Standard PDF files work without any issues.'
-    }
+    { question: t('q1.question'), answer: t('q1.answer') },
+    { question: t('q2.question'), answer: t('q2.answer') },
+    { question: t('q3.question'), answer: t('q3.answer') },
+    { question: t('q4.question'), answer: t('q4.answer') },
+    { question: t('q5.question'), answer: t('q5.answer') },
+    { question: t('q6.question'), answer: t('q6.answer') }
   ];
 
   return (
     <section className="w-full py-16 bg-white">
       <div className="max-w-6xl mx-auto px-4">
         <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-          Frequently Asked Questions
+          {t('title')}
         </h2>
 
         <div className="space-y-4">

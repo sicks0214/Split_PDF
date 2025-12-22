@@ -1,22 +1,45 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
+import { Breadcrumb } from '@/components/Breadcrumb';
 import FileUploader from '@/components/FileUploader';
 import ModeSelector from '@/components/ModeSelector';
 import ParameterInput from '@/components/ParameterInput';
 import UsageScenariosSection from '@/components/UsageScenariosSection';
 import HowToSection from '@/components/HowToSection';
 import FAQSection from '@/components/FAQSection';
-import { SplitMode, SplitConfig, FileInfo, FeedbackMessage } from '@/types';
-import { splitPDF } from '@/lib/api';
+import { splitPDF, type SplitConfig } from '@/lib/pdfSplitter';
 
-export default function Home() {
+type SplitMode = 'range' | 'fixed' | 'extract';
+
+interface FileInfo {
+  name: string;
+  size: number;
+  pageCount?: number;
+}
+
+interface FeedbackMessage {
+  type: 'success' | 'error' | 'info';
+  message: string;
+}
+
+export default function SplitPDFPage() {
+  const t = useTranslations('split-pdf');
   const [file, setFile] = useState<File | null>(null);
   const [fileInfo, setFileInfo] = useState<FileInfo | undefined>();
   const [mode, setMode] = useState<SplitMode>('range');
   const [config, setConfig] = useState<SplitConfig>({ mode: 'range' });
   const [isProcessing, setIsProcessing] = useState(false);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
+
+  const breadcrumbItems = [
+    { label: t('breadcrumb.home'), href: '/', external: true },
+    { label: t('breadcrumb.category'), href: '/' },
+    { label: t('breadcrumb.tool') },
+  ];
 
   const handleFileSelect = (selectedFile: File) => {
     if (!selectedFile) {
@@ -36,10 +59,6 @@ export default function Home() {
   const handleModeChange = (newMode: SplitMode) => {
     setMode(newMode);
     setConfig({ mode: newMode });
-    setFeedback({
-      type: 'info',
-      message: `${newMode.charAt(0).toUpperCase() + newMode.slice(1)} mode enabled`
-    });
   };
 
   const handleConfigChange = (newConfig: SplitConfig) => {
@@ -48,15 +67,15 @@ export default function Home() {
 
   const validateConfig = (): boolean => {
     if (config.mode === 'range' && !config.range?.trim()) {
-      setFeedback({ type: 'error', message: 'Please enter a page range' });
+      setFeedback({ type: 'error', message: t('feedback.noRange') });
       return false;
     }
     if (config.mode === 'fixed' && (!config.pagesPerFile || config.pagesPerFile < 1)) {
-      setFeedback({ type: 'error', message: 'Please enter a valid number of pages per file' });
+      setFeedback({ type: 'error', message: t('feedback.noFixed') });
       return false;
     }
     if (config.mode === 'extract' && !config.pages?.trim()) {
-      setFeedback({ type: 'error', message: 'Please enter page numbers to extract' });
+      setFeedback({ type: 'error', message: t('feedback.noExtract') });
       return false;
     }
     return true;
@@ -64,7 +83,7 @@ export default function Home() {
 
   const handleSplit = async () => {
     if (!file) {
-      setFeedback({ type: 'error', message: 'Please upload a PDF file first' });
+      setFeedback({ type: 'error', message: t('feedback.noFile') });
       return;
     }
 
@@ -73,17 +92,15 @@ export default function Home() {
     }
 
     setIsProcessing(true);
-    setFeedback({ type: 'info', message: 'Processing your PDF...' });
+    setFeedback({ type: 'info', message: t('feedback.processing') });
 
     try {
       const blob = await splitPDF(file, config);
 
-      // 触发下载
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
 
-      // 检测文件类型
       const contentType = blob.type;
       if (contentType === 'application/pdf') {
         a.download = 'split_output.pdf';
@@ -96,12 +113,12 @@ export default function Home() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      setFeedback({ type: 'success', message: 'PDF split successfully! Your download should start automatically.' });
+      setFeedback({ type: 'success', message: t('feedback.success') });
     } catch (error: any) {
       console.error('Split error:', error);
       setFeedback({
         type: 'error',
-        message: error.response?.data?.error || error.message || 'Failed to split PDF. Please try again.'
+        message: error.message || t('feedback.error')
       });
     } finally {
       setIsProcessing(false);
@@ -109,29 +126,28 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 py-6">
-          <nav className="text-sm text-gray-600 mb-4 text-center">
-            <span>Home</span> / <span>PDF Tools</span> / <span className="text-gray-900">Split PDF</span>
-          </nav>
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 text-center mb-4">Split PDF</h1>
-          <p className="text-lg text-gray-600 text-center max-w-3xl mx-auto">Split your PDF files by page range, fixed pages, or extract specific pages</p>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <Header />
 
-      {/* Core Tool Area */}
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="bg-white rounded-xl shadow-lg p-8 space-y-8">
-          {/* File Upload */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <Breadcrumb items={breadcrumbItems} />
+
+        <header className="text-center mb-12">
+          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
+            {t('title')}
+          </h1>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            {t('subtitle')}
+          </p>
+        </header>
+
+        <div className="bg-white rounded-xl shadow-lg p-8 space-y-8 mb-12">
           <FileUploader
             onFileSelect={handleFileSelect}
             fileInfo={fileInfo}
             disabled={isProcessing}
           />
 
-          {/* Mode Selection */}
           {file && (
             <ModeSelector
               mode={mode}
@@ -140,7 +156,6 @@ export default function Home() {
             />
           )}
 
-          {/* Parameter Input */}
           {file && (
             <ParameterInput
               mode={mode}
@@ -150,7 +165,6 @@ export default function Home() {
             />
           )}
 
-          {/* Feedback Message */}
           {feedback && (
             <div
               className={`p-4 rounded-lg flex items-center space-x-2 ${
@@ -168,7 +182,6 @@ export default function Home() {
             </div>
           )}
 
-          {/* Split Button */}
           {file && (
             <button
               onClick={handleSplit}
@@ -176,30 +189,20 @@ export default function Home() {
               className={`w-full py-4 px-6 rounded-lg font-semibold text-white text-lg transition-all ${
                 isProcessing
                   ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-primary-600 hover:bg-primary-700 shadow-lg hover:shadow-xl'
+                  : 'bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl'
               }`}
             >
-              {isProcessing ? 'Processing...' : 'Split PDF'}
+              {isProcessing ? t('actions.splitting') : t('actions.split')}
             </button>
           )}
         </div>
+
+        <UsageScenariosSection />
+        <HowToSection />
+        <FAQSection />
       </div>
 
-      {/* Usage Scenarios */}
-      <UsageScenariosSection />
-
-      {/* How-to Section */}
-      <HowToSection />
-
-      {/* FAQ */}
-      <FAQSection />
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8 mt-16">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <p>&copy; 2024 Toolibox. All rights reserved.</p>
-        </div>
-      </footer>
-    </main>
+      <Footer />
+    </div>
   );
 }

@@ -1,0 +1,111 @@
+{
+  "split-pdf": {
+    "title": "PDF 分割工具",
+    "subtitle": "按页码范围、固定页数或提取指定页面分割 PDF 文件",
+    "breadcrumb": {
+      "home": "首页",
+      "category": "PDF 工具",
+      "tool": "PDF 分割"
+    },
+    "upload": {
+      "title": "上传 PDF 文件",
+      "dragDrop": "拖放或点击上传",
+      "fileSelected": "已选择文件",
+      "remove": "移除"
+    },
+    "mode": {
+      "title": "选择分割模式",
+      "range": "按页码范围",
+      "rangeDesc": "按特定页码范围分割（例如：1-3, 5, 8-10）",
+      "fixed": "固定页数",
+      "fixedDesc": "分割为固定页数的文件",
+      "extract": "提取页面",
+      "extractDesc": "提取特定页面到一个文件"
+    },
+    "parameters": {
+      "rangeLabel": "页码范围",
+      "rangePlaceholder": "例如：1-3, 5, 8-10",
+      "rangeHelp": "输入用逗号分隔的页码范围",
+      "fixedLabel": "每个文件的页数",
+      "fixedPlaceholder": "例如：5",
+      "fixedHelp": "每个输出文件的页数",
+      "extractLabel": "要提取的页码",
+      "extractPlaceholder": "例如：1, 3, 7",
+      "extractHelp": "输入用逗号分隔的页码"
+    },
+    "actions": {
+      "split": "分割 PDF",
+      "splitting": "处理中..."
+    },
+    "feedback": {
+      "noFile": "请先上传 PDF 文件",
+      "noRange": "请输入页码范围",
+      "noFixed": "请输入有效的每文件页数",
+      "noExtract": "请输入要提取的页码",
+      "processing": "正在处理您的 PDF...",
+      "success": "PDF 分割成功！下载应该会自动开始。",
+      "error": "分割 PDF 失败，请重试。"
+    },
+    "useCases": {
+      "title": "使用场景",
+      "case1": {
+        "title": "提取章节",
+        "description": "将书籍或文档分割为单独的章节"
+      },
+      "case2": {
+        "title": "分享特定页面",
+        "description": "仅提取和分享您需要的页面"
+      },
+      "case3": {
+        "title": "减小文件大小",
+        "description": "将大型 PDF 分解为更小、更易管理的文件"
+      }
+    },
+    "howTo": {
+      "title": "如何分割 PDF",
+      "step1": {
+        "title": "上传 PDF",
+        "description": "点击或拖放上传您的 PDF 文件"
+      },
+      "step2": {
+        "title": "选择模式",
+        "description": "选择分割方式：按范围、固定页数或提取"
+      },
+      "step3": {
+        "title": "设置参数",
+        "description": "输入页码范围、每文件页数或要提取的页码"
+      },
+      "step4": {
+        "title": "分割并下载",
+        "description": "点击分割 PDF 并下载您的文件"
+      }
+    },
+    "faq": {
+      "title": "常见问题",
+      "q1": {
+        "question": "我的 PDF 文件安全吗？",
+        "answer": "是的，所有处理都在您的浏览器中完成。您的文件不会离开您的设备。"
+      },
+      "q2": {
+        "question": "最大文件大小是多少？",
+        "answer": "该工具可以处理最大 50MB 的 PDF，具体取决于您的浏览器能力。"
+      },
+      "q3": {
+        "question": "可以分割受密码保护的 PDF 吗？",
+        "answer": "不可以，您需要在分割之前移除密码保护。"
+      },
+      "q4": {
+        "question": "如果输入无效的页码会怎样？",
+        "answer": "如果页码超过 PDF 的总页数，工具会显示错误消息。"
+      },
+      "q5": {
+        "question": "可以一次分割多个 PDF 吗？",
+        "answer": "目前，您一次只能分割一个 PDF。"
+      },
+      "q6": {
+        "question": "输出格式是什么？",
+        "answer": "单个文件输出为 PDF。多个文件打包为 ZIP 压缩包。"
+      }
+    }
+  }
+}

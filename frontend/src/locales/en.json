@@ -1,0 +1,111 @@
+{
+  "split-pdf": {
+    "title": "Split PDF",
+    "subtitle": "Split your PDF files by page range, fixed pages, or extract specific pages",
+    "breadcrumb": {
+      "home": "Home",
+      "category": "PDF Tools",
+      "tool": "Split PDF"
+    },
+    "upload": {
+      "title": "Upload PDF File",
+      "dragDrop": "Drag and drop or click to upload",
+      "fileSelected": "File selected",
+      "remove": "Remove"
+    },
+    "mode": {
+      "title": "Select Split Mode",
+      "range": "By Page Range",
+      "rangeDesc": "Split by specific page ranges (e.g., 1-3, 5, 8-10)",
+      "fixed": "Fixed Pages",
+      "fixedDesc": "Split into files with fixed number of pages",
+      "extract": "Extract Pages",
+      "extractDesc": "Extract specific pages into one file"
+    },
+    "parameters": {
+      "rangeLabel": "Page Range",
+      "rangePlaceholder": "e.g., 1-3, 5, 8-10",
+      "rangeHelp": "Enter page ranges separated by commas",
+      "fixedLabel": "Pages Per File",
+      "fixedPlaceholder": "e.g., 5",
+      "fixedHelp": "Number of pages in each output file",
+      "extractLabel": "Pages to Extract",
+      "extractPlaceholder": "e.g., 1, 3, 7",
+      "extractHelp": "Enter page numbers separated by commas"
+    },
+    "actions": {
+      "split": "Split PDF",
+      "splitting": "Processing..."
+    },
+    "feedback": {
+      "noFile": "Please upload a PDF file first",
+      "noRange": "Please enter a page range",
+      "noFixed": "Please enter a valid number of pages per file",
+      "noExtract": "Please enter page numbers to extract",
+      "processing": "Processing your PDF...",
+      "success": "PDF split successfully! Your download should start automatically.",
+      "error": "Failed to split PDF. Please try again."
+    },
+    "useCases": {
+      "title": "Use Cases",
+      "case1": {
+        "title": "Extract Chapters",
+        "description": "Split a book or document into separate chapters"
+      },
+      "case2": {
+        "title": "Share Specific Pages",
+        "description": "Extract and share only the pages you need"
+      },
+      "case3": {
+        "title": "Reduce File Size",
+        "description": "Break large PDFs into smaller, manageable files"
+      }
+    },
+    "howTo": {
+      "title": "How to Split PDF",
+      "step1": {
+        "title": "Upload PDF",
+        "description": "Click or drag to upload your PDF file"
+      },
+      "step2": {
+        "title": "Choose Mode",
+        "description": "Select how you want to split: by range, fixed pages, or extract"
+      },
+      "step3": {
+        "title": "Set Parameters",
+        "description": "Enter page ranges, pages per file, or pages to extract"
+      },
+      "step4": {
+        "title": "Split & Download",
+        "description": "Click Split PDF and download your files"
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "q1": {
+        "question": "Is my PDF file secure?",
+        "answer": "Yes, all processing is done in your browser. Your files never leave your device."
+      },
+      "q2": {
+        "question": "What is the maximum file size?",
+        "answer": "The tool can handle PDFs up to 50MB, depending on your browser's capabilities."
+      },
+      "q3": {
+        "question": "Can I split password-protected PDFs?",
+        "answer": "No, you need to remove the password protection before splitting."
+      },
+      "q4": {
+        "question": "What happens if I enter invalid page numbers?",
+        "answer": "The tool will show an error message if page numbers exceed the PDF's total pages."
+      },
+      "q5": {
+        "question": "Can I split multiple PDFs at once?",
+        "answer": "Currently, you can only split one PDF at a time."
+      },
+      "q6": {
+        "question": "What format will the output be?",
+        "answer": "Single file outputs are PDF. Multiple files are packaged in a ZIP archive."
+      }
+    }
+  }
+}

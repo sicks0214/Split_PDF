@@ -1,6 +1,8 @@
 'use client';
 
-import { SplitMode } from '@/types';
+import { useTranslations } from 'next-intl';
+
+type SplitMode = 'range' | 'fixed' | 'extract';
 
 interface ModeSelectorProps {
   mode: SplitMode;
@@ -9,30 +11,32 @@ interface ModeSelectorProps {
 }
 
 export default function ModeSelector({ mode, onModeChange, disabled }: ModeSelectorProps) {
+  const t = useTranslations('split-pdf.mode');
+
   const modes = [
     {
       id: 'range' as SplitMode,
       icon: '📄',
-      title: 'By Page Range',
-      description: 'Enter ranges like 1-3, 5, 8-10'
+      title: t('range'),
+      description: t('rangeDesc')
     },
     {
       id: 'fixed' as SplitMode,
       icon: '📊',
-      title: 'Every X Pages',
-      description: 'Split into equal parts'
+      title: t('fixed'),
+      description: t('fixedDesc')
     },
     {
       id: 'extract' as SplitMode,
       icon: '🎯',
-      title: 'Extract Pages',
-      description: 'Select specific pages like 1, 3, 7'
+      title: t('extract'),
+      description: t('extractDesc')
     }
   ];
 
   return (
     <div className="w-full">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Split Mode</h3>
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('title')}</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {modes.map((m) => (
           <button
