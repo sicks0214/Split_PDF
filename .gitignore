@@ -41,3 +41,7 @@ Thumbs.db
 
 # Docker
 *.tar.gz
+
+# 保留空文件夹
+!publish/.gitkeep
+!frontend/public/.gitkeep

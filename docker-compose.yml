@@ -1,22 +1,43 @@
 version: '3.8'
 
 services:
-  # 前端服务 - Split PDF UI (纯客户端处理)
-  frontend-split:
+  # Backend API
+  backend-main:
     build:
-      context: ./frontend
+      context: ./backend
       dockerfile: Dockerfile
-    image: toolibox/frontend-split:latest
-    container_name: split-pdf-frontend
+    image: toolibox/backend-main
+    container_name: toolibox-backend-main
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=production
+      - PORT=8000
+    volumes:
+      - ./backend/tmp:/app/tmp
+    networks:
+      - toolibox-network
+
+  # PDF Tools Frontend (Split PDF)
+  frontend-pdf-tools:
+    build:
+      context: ./frontend/pdf-tools
+      dockerfile: Dockerfile
+    image: toolibox/frontend-pdf-tools
+    container_name: toolibox-frontend-pdf-tools
     restart: always
     ports:
       - "3001:3001"
     environment:
       - NODE_ENV=production
       - PORT=3001
+    depends_on:
+      - backend-main
     networks:
-      - split-pdf-network
+      - toolibox-network
 
 networks:
-  split-pdf-network:
+  toolibox-network:
+    name: toolibox-network
     driver: bridge

@@ -10,15 +10,15 @@
   - 🎯 提取指定页面（1, 3, 7）
 
 - ✅ **技术栈**
-  - 纯前端：Next.js 14 + TypeScript + Tailwind CSS
-  - 客户端处理：pdf-lib + jszip
+  - 前端：Next.js 14 + TypeScript + Tailwind CSS
+  - 后端处理：通过 Toolibox 统一后端 API
   - 国际化：next-intl（中英双语）
   - 部署：Docker
 
 - ✅ **隐私安全**
-  - 文件完全在浏览器中处理
-  - 不上传到服务器
-  - 无需后端服务
+  - 文件通过后端 API 处理
+  - 处理完成后自动删除临时文件
+  - 符合 Toolibox 安全规范
 
 - ✅ **SEO 优化**
   - 完整的 How-to 教程
@@ -186,8 +186,8 @@ curl http://localhost:3001
 
 ### 架构特点
 
-- **纯前端处理**：使用 pdf-lib 在浏览器中处理 PDF
-- **隐私保护**：文件不离开用户设备
+- **前后端分离**：前端负责 UI，后端负责 PDF 处理
+- **统一后端 API**：调用 Toolibox 后端 `/api/pdf/split`
 - **国际化**：next-intl 支持中英双语
 - **微前端**：basePath 设置为 `/pdf-tools`
 - **多阶段构建**：Docker standalone 模式优化镜像大小
@@ -198,9 +198,7 @@ curl http://localhost:3001
 {
   "next": "^14.0.4",
   "react": "^18.2.0",
-  "next-intl": "^3.0.0",
-  "pdf-lib": "^1.17.1",
-  "jszip": "^3.10.1"
+  "next-intl": "^3.0.0"
 }
 ```
 
@@ -208,9 +206,10 @@ curl http://localhost:3001
 
 1. 用户在浏览器中选择 PDF 文件
 2. 选择分割模式和参数
-3. pdf-lib 在客户端解析和分割 PDF
-4. 单个文件直接下载，多个文件打包为 ZIP
-5. 所有处理在浏览器内存中完成
+3. 前端将文件和配置发送到后端 API `/api/pdf/split`
+4. 后端使用 pdf-lib 处理 PDF
+5. 返回处理后的文件（单个 PDF 或 ZIP 包）
+6. 前端触发下载
 
 ## 故障排查
 
@@ -247,7 +246,7 @@ npm run build
 
 ## 符合规范
 
-本项目完全符合 Toolibox Tool Template v3.1 技术规范：
+本项目完全符合 Toolibox Tool Template v3.0 技术规范：
 
 - ✅ 国际化支持（next-intl）
 - ✅ 目录结构（app/[locale]/split-pdf/）
@@ -256,7 +255,8 @@ npm run build
 - ✅ 布局组件（Header, Footer, Breadcrumb）
 - ✅ basePath 设置为 /pdf-tools
 - ✅ 端口号为 3001
-- ✅ 客户端处理（pdf-lib）
+- ✅ 后端 API 处理（调用 /api/pdf/split）
+- ✅ Docker 配置符合 Toolibox 规范
 
 详细重构报告请查看：[docs/REFACTOR_REPORT.md](docs/REFACTOR_REPORT.md)
 
