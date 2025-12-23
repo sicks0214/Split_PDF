@@ -8,14 +8,12 @@ services:
       dockerfile: Dockerfile
     image: toolibox/backend-main
     container_name: toolibox-backend-main
-    restart: always
+    restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
       - NODE_ENV=production
       - PORT=8000
-    volumes:
-      - ./backend/tmp:/app/tmp
     networks:
       - toolibox-network
 
@@ -26,7 +24,7 @@ services:
       dockerfile: Dockerfile
     image: toolibox/frontend-pdf-tools
     container_name: toolibox-frontend-pdf-tools
-    restart: always
+    restart: unless-stopped
     ports:
       - "3001:3001"
     environment:
@@ -40,4 +38,4 @@ services:
 networks:
   toolibox-network:
     name: toolibox-network
-    driver: bridge
+    external: true

@@ -1,55 +1,62 @@
-const { PDFDocument } = require('pdf-lib');
-const JSZip = require('jszip');
-const fs = require('fs').promises;
-const path = require('path');
+import { Request, Response } from 'express';
+import { PDFDocument } from 'pdf-lib';
+import JSZip from 'jszip';
+
+interface SplitResult {
+  fileName: string;
+  buffer: Uint8Array;
+  pageNumbers: number[];
+}
 
 // 分割 PDF
-exports.split = async (req, res) => {
-  let filePath = null;
-
+export const split = async (req: Request, res: Response): Promise<void> => {
   try {
     if (!req.file) {
-      return res.status(400).json({ success: false, message: 'No file uploaded' });
+      res.status(400).json({ success: false, message: 'No file uploaded' });
+      return;
     }
 
-    filePath = req.file.path;
     const { mode, range, pagesPerFile, pages } = req.body;
 
     if (!mode) {
-      return res.status(400).json({ success: false, message: 'Missing required parameter: mode' });
+      res.status(400).json({ success: false, message: 'Missing required parameter: mode' });
+      return;
     }
 
-    // 加载 PDF
-    const pdfBytes = await fs.readFile(filePath);
-    const pdfDoc = await PDFDocument.load(pdfBytes);
+    // 加载 PDF（从内存 buffer）
+    const pdfDoc = await PDFDocument.load(req.file.buffer);
     const totalPages = pdfDoc.getPageCount();
 
-    let results;
+    let results: SplitResult[];
 
     switch (mode) {
       case 'range':
         if (!range) {
-          return res.status(400).json({ success: false, message: 'Missing required parameter: range' });
+          res.status(400).json({ success: false, message: 'Missing required parameter: range' });
+          return;
         }
         results = await splitByRange(pdfDoc, range, totalPages);
         break;
 
       case 'fixed':
         if (!pagesPerFile) {
-          return res.status(400).json({ success: false, message: 'Missing required parameter: pagesPerFile' });
+          res.status(400).json({ success: false, message: 'Missing required parameter: pagesPerFile' });
+          return;
         }
         results = await splitByFixedPages(pdfDoc, parseInt(pagesPerFile), totalPages);
         break;
 
       case 'extract':
         if (!pages) {
-          return res.status(400).json({ success: false, message: 'Missing required parameter: pages' });
+          res.status(400).json({ success: false, message: 'Missing required parameter: pages' });
+          return;
         }
         results = await extractPages(pdfDoc, pages, totalPages);
         break;
 
       default:
-        return res.status(400).json({ success: false, message: `Unknown split mode: ${mode}` });
+        res.status(400).json({ success: false, message: `Unknown split mode: ${mode}` });
+        return;
     }
 
     // 返回结果
@@ -68,23 +75,14 @@ exports.split = async (req, res) => {
       res.send(zipBuffer);
     }
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Split error:', error);
     res.status(500).json({ success: false, message: error.message || 'Failed to split PDF' });
-  } finally {
-    // 清理临时文件
-    if (filePath) {
-      try {
-        await fs.unlink(filePath);
-      } catch (err) {
-        console.error('Failed to delete temp file:', err);
-      }
-    }
   }
 };
 
 // 按页码范围分割
-async function splitByRange(pdfDoc, rangeString, totalPages) {
+async function splitByRange(pdfDoc: PDFDocument, rangeString: string, totalPages: number): Promise<SplitResult[]> {
   const pageNumbers = parsePageRange(rangeString);
 
   const invalidPages = pageNumbers.filter(p => p > totalPages);
@@ -93,7 +91,7 @@ async function splitByRange(pdfDoc, rangeString, totalPages) {
   }
 
   const ranges = groupConsecutivePages(pageNumbers);
-  const results = [];
+  const results: SplitResult[] = [];
 
   for (const range of ranges) {
     const newPdf = await PDFDocument.create();
@@ -114,8 +112,8 @@ async function splitByRange(pdfDoc, rangeString, totalPages) {
 }
 
 // 按固定页数分割
-async function splitByFixedPages(pdfDoc, pagesPerFile, totalPages) {
-  const results = [];
+async function splitByFixedPages(pdfDoc: PDFDocument, pagesPerFile: number, totalPages: number): Promise<SplitResult[]> {
+  const results: SplitResult[] = [];
 
   for (let start = 0; start < totalPages; start += pagesPerFile) {
     const end = Math.min(start + pagesPerFile, totalPages);
@@ -140,7 +138,7 @@ async function splitByFixedPages(pdfDoc, pagesPerFile, totalPages) {
 }
 
 // 提取指定页面
-async function extractPages(pdfDoc, pageString, totalPages) {
+async function extractPages(pdfDoc: PDFDocument, pageString: string, totalPages: number): Promise<SplitResult[]> {
   const pageNumbers = parsePageList(pageString);
 
   const invalidPages = pageNumbers.filter(p => p > totalPages);
@@ -163,8 +161,8 @@ async function extractPages(pdfDoc, pageString, totalPages) {
 }
 
 // 解析页码范围
-function parsePageRange(rangeString) {
-  const pages = new Set();
+function parsePageRange(rangeString: string): number[] {
+  const pages = new Set<number>();
   const parts = rangeString.split(',').map(p => p.trim());
 
   for (const part of parts) {
@@ -197,7 +195,7 @@ function parsePageRange(rangeString) {
 }
 
 // 解析页码列表
-function parsePageList(pageString) {
+function parsePageList(pageString: string): number[] {
   const pages = pageString.split(',')
     .map(p => parseInt(p.trim(), 10))
     .filter(p => !isNaN(p) && p >= 1);
@@ -210,10 +208,10 @@ function parsePageList(pageString) {
 }
 
 // 将连续页码分组
-function groupConsecutivePages(pages) {
+function groupConsecutivePages(pages: number[]): number[][] {
   if (pages.length === 0) return [];
 
-  const groups = [];
+  const groups: number[][] = [];
   let currentGroup = [pages[0]];
 
   for (let i = 1; i < pages.length; i++) {
@@ -230,7 +228,7 @@ function groupConsecutivePages(pages) {
 }
 
 // 生成文件名
-function generateFileName(pages) {
+function generateFileName(pages: number[]): string {
   if (pages.length === 1) {
     return `page_${pages[0]}.pdf`;
   } else {

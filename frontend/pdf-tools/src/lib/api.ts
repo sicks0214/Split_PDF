@@ -20,7 +20,6 @@ export async function splitPDF(file: File, config: SplitConfig): Promise<Blob> {
     formData.append('pages', config.pages);
   }
 
-  // 本地开发使用 localhost:8000，生产环境使用 /api
   const apiUrl = process.env.NODE_ENV === 'production'
     ? '/api/pdf/split'
     : 'http://localhost:8000/api/pdf/split';

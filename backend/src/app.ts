@@ -1,6 +1,6 @@
-const express = require('express');
-const cors = require('cors');
-const pdfRoutes = require('./routes/pdf');
+import express from 'express';
+import cors from 'cors';
+import pdfRoutes from './routes/pdf';
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -23,7 +23,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/pdf', pdfRoutes);
 
 // 错误处理
-app.use((err, req, res, next) => {
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Error:', err);
   res.status(500).json({
     success: false,
