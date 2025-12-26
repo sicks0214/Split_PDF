@@ -1,29 +1,7 @@
-import { PDFDocument } from 'pdf-lib';
-import JSZip from 'jszip';
+const { PDFDocument } = require('pdf-lib');
+const JSZip = require('jszip');
 
-interface HandlerContext {
-  file: {
-    buffer: Buffer;
-    originalname: string;
-    mimetype: string;
-  };
-  body: Record<string, any>;
-}
-
-interface HandlerResult {
-  type: 'file';
-  data: Buffer;
-  filename: string;
-  contentType: string;
-}
-
-interface SplitResult {
-  fileName: string;
-  buffer: Uint8Array;
-  pageNumbers: number[];
-}
-
-export default async function handler(ctx: HandlerContext): Promise<HandlerResult> {
+module.exports = async function handler(ctx) {
   const { file, body } = ctx;
   const { mode, range, pagesPerFile, pages } = body;
 
@@ -38,7 +16,7 @@ export default async function handler(ctx: HandlerContext): Promise<HandlerResul
   const pdfDoc = await PDFDocument.load(file.buffer);
   const totalPages = pdfDoc.getPageCount();
 
-  let results: SplitResult[];
+  let results;
 
   switch (mode) {
     case 'range':
@@ -76,9 +54,9 @@ export default async function handler(ctx: HandlerContext): Promise<HandlerResul
     filename: 'split_output.zip',
     contentType: 'application/zip'
   };
-}
+};
 
-async function splitByRange(pdfDoc: PDFDocument, rangeString: string, totalPages: number): Promise<SplitResult[]> {
+async function splitByRange(pdfDoc, rangeString, totalPages) {
   const pageNumbers = parsePageRange(rangeString);
   const invalidPages = pageNumbers.filter(p => p > totalPages);
   if (invalidPages.length > 0) {
@@ -86,7 +64,7 @@ async function splitByRange(pdfDoc: PDFDocument, rangeString: string, totalPages
   }
 
   const ranges = groupConsecutivePages(pageNumbers);
-  const results: SplitResult[] = [];
+  const results = [];
 
   for (const range of ranges) {
     const newPdf = await PDFDocument.create();
@@ -104,8 +82,8 @@ async function splitByRange(pdfDoc: PDFDocument, rangeString: string, totalPages
   return results;
 }
 
-async function splitByFixedPages(pdfDoc: PDFDocument, pagesPerFile: number, totalPages: number): Promise<SplitResult[]> {
-  const results: SplitResult[] = [];
+async function splitByFixedPages(pdfDoc, pagesPerFile, totalPages) {
+  const results = [];
 
   for (let start = 0; start < totalPages; start += pagesPerFile) {
     const end = Math.min(start + pagesPerFile, totalPages);
@@ -127,7 +105,7 @@ async function splitByFixedPages(pdfDoc: PDFDocument, pagesPerFile: number, tota
   return results;
 }
 
-async function extractPages(pdfDoc: PDFDocument, pageString: string, totalPages: number): Promise<SplitResult[]> {
+async function extractPages(pdfDoc, pageString, totalPages) {
   const pageNumbers = parsePageList(pageString);
   const invalidPages = pageNumbers.filter(p => p > totalPages);
   if (invalidPages.length > 0) {
@@ -146,8 +124,8 @@ async function extractPages(pdfDoc: PDFDocument, pageString: string, totalPages:
   }];
 }
 
-function parsePageRange(rangeString: string): number[] {
-  const pages = new Set<number>();
+function parsePageRange(rangeString) {
+  const pages = new Set();
   const parts = rangeString.split(',').map(p => p.trim());
 
   for (const part of parts) {
@@ -166,7 +144,7 @@ function parsePageRange(rangeString: string): number[] {
   return Array.from(pages).sort((a, b) => a - b);
 }
 
-function parsePageList(pageString: string): number[] {
+function parsePageList(pageString) {
   const pages = pageString.split(',')
     .map(p => parseInt(p.trim(), 10))
     .filter(p => !isNaN(p) && p >= 1);
@@ -175,9 +153,9 @@ function parsePageList(pageString: string): number[] {
   return Array.from(new Set(pages)).sort((a, b) => a - b);
 }
 
-function groupConsecutivePages(pages: number[]): number[][] {
+function groupConsecutivePages(pages) {
   if (pages.length === 0) return [];
-  const groups: number[][] = [];
+  const groups = [];
   let currentGroup = [pages[0]];
 
   for (let i = 1; i < pages.length; i++) {
@@ -193,7 +171,7 @@ function groupConsecutivePages(pages: number[]): number[][] {
   return groups;
 }
 
-function generateFileName(pages: number[]): string {
+function generateFileName(pages) {
   return pages.length === 1
     ? `page_${pages[0]}.pdf`
     : `pages_${pages[0]}-${pages[pages.length - 1]}.pdf`;

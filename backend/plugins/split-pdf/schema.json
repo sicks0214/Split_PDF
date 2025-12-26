@@ -3,6 +3,16 @@
   "type": "object",
   "required": ["mode"],
   "properties": {
+    "upload": {
+      "type": "file",
+      "title": {
+        "en": "Upload PDF",
+        "zh": "上传 PDF"
+      },
+      "accept": ".pdf",
+      "maxSize": 52428800,
+      "multiple": false
+    },
     "mode": {
       "type": "string",
       "enum": ["range", "fixed", "extract"],

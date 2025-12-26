@@ -15,11 +15,5 @@
   "keywords": ["pdf", "split", "extract", "pages", "divide"],
   "author": "Toolibox",
   "enabled": true,
-  "fileUpload": {
-    "enabled": true,
-    "accept": ".pdf",
-    "maxSize": 52428800,
-    "fieldName": "file"
-  },
   "outputType": "file"
 }
