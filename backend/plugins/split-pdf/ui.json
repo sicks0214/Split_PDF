@@ -1,0 +1,94 @@
+{
+  "layout": "tool-page",
+  "sections": [
+    {
+      "type": "hero",
+      "title": {
+        "en": "Split PDF",
+        "zh": "PDF 分割工具"
+      },
+      "subtitle": {
+        "en": "Split PDF files by page range, fixed pages, or extract specific pages",
+        "zh": "按页码范围、固定页数或提取指定页面分割 PDF 文件"
+      }
+    },
+    {
+      "type": "tool-form",
+      "schemaRef": "schema.json"
+    },
+    {
+      "type": "use-cases",
+      "title": {
+        "en": "Use Cases",
+        "zh": "使用场景"
+      },
+      "items": [
+        {
+          "icon": "book-open",
+          "title": { "en": "Extract Chapters", "zh": "提取章节" },
+          "description": { "en": "Split books or documents into separate chapters", "zh": "将书籍或文档分割为单独的章节" }
+        },
+        {
+          "icon": "share",
+          "title": { "en": "Share Specific Pages", "zh": "分享特定页面" },
+          "description": { "en": "Extract and share only the pages you need", "zh": "仅提取和分享您需要的页面" }
+        },
+        {
+          "icon": "minimize",
+          "title": { "en": "Reduce File Size", "zh": "减小文件大小" },
+          "description": { "en": "Break large PDFs into smaller, manageable files", "zh": "将大型 PDF 分解为更小、更易管理的文件" }
+        }
+      ]
+    },
+    {
+      "type": "how-to",
+      "title": {
+        "en": "How to Split PDF",
+        "zh": "如何分割 PDF"
+      },
+      "steps": [
+        {
+          "title": { "en": "Upload PDF", "zh": "上传 PDF" },
+          "description": { "en": "Click or drag and drop to upload your PDF file", "zh": "点击或拖放上传您的 PDF 文件" }
+        },
+        {
+          "title": { "en": "Select Mode", "zh": "选择模式" },
+          "description": { "en": "Choose how to split: by range, fixed pages, or extract", "zh": "选择分割方式：按范围、固定页数或提取" }
+        },
+        {
+          "title": { "en": "Set Parameters", "zh": "设置参数" },
+          "description": { "en": "Enter page ranges, pages per file, or pages to extract", "zh": "输入页码范围、每文件页数或要提取的页码" }
+        },
+        {
+          "title": { "en": "Split & Download", "zh": "分割并下载" },
+          "description": { "en": "Click Split PDF and download your files", "zh": "点击分割 PDF 并下载您的文件" }
+        }
+      ]
+    },
+    {
+      "type": "faq",
+      "title": {
+        "en": "FAQ",
+        "zh": "常见问题"
+      },
+      "items": [
+        {
+          "question": { "en": "Is my PDF file secure?", "zh": "我的 PDF 文件安全吗？" },
+          "answer": { "en": "Yes, files are processed on our secure server and automatically deleted after processing.", "zh": "是的，文件在我们的安全服务器上处理，处理完成后自动删除。" }
+        },
+        {
+          "question": { "en": "What is the maximum file size?", "zh": "最大文件大小是多少？" },
+          "answer": { "en": "The tool can handle PDFs up to 50MB.", "zh": "该工具可以处理最大 50MB 的 PDF。" }
+        },
+        {
+          "question": { "en": "Can I split password-protected PDFs?", "zh": "可以分割受密码保护的 PDF 吗？" },
+          "answer": { "en": "No, you need to remove the password protection before splitting.", "zh": "不可以，您需要在分割之前移除密码保护。" }
+        },
+        {
+          "question": { "en": "What is the output format?", "zh": "输出格式是什么？" },
+          "answer": { "en": "Single file outputs as PDF. Multiple files are packaged as a ZIP archive.", "zh": "单个文件输出为 PDF。多个文件打包为 ZIP 压缩包。" }
+        }
+      ]
+    }
+  ]
+}

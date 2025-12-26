@@ -1,0 +1,25 @@
+{
+  "name": "split-pdf",
+  "slug": "split-pdf",
+  "category": "pdf",
+  "version": "1.0.0",
+  "title": {
+    "en": "Split PDF",
+    "zh": "PDF 分割"
+  },
+  "description": {
+    "en": "Split PDF files by page range, fixed pages, or extract specific pages",
+    "zh": "按页码范围、固定页数或提取指定页面分割 PDF 文件"
+  },
+  "icon": "scissors",
+  "keywords": ["pdf", "split", "extract", "pages", "divide"],
+  "author": "Toolibox",
+  "enabled": true,
+  "fileUpload": {
+    "enabled": true,
+    "accept": ".pdf",
+    "maxSize": 52428800,
+    "fieldName": "file"
+  },
+  "outputType": "file"
+}
