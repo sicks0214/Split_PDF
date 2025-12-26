@@ -1,8 +1,9 @@
 const { PDFDocument } = require('pdf-lib');
 const JSZip = require('jszip');
 
-module.exports = async function handler(ctx) {
-  const { file, body } = ctx;
+module.exports.default = async function handler(req, res) {
+  const file = req.file;
+  const body = req.body;
   const { mode, range, pagesPerFile, pages } = body;
 
   if (!file) {
