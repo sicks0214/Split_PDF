@@ -1,41 +1,38 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "required": ["mode"],
-  "properties": {
-    "upload": {
-      "type": "file",
-      "title": {
-        "en": "Upload PDF",
-        "zh": "上传 PDF"
-      },
-      "accept": ".pdf",
-      "maxSize": 52428800,
-      "multiple": false
-    },
-    "mode": {
-      "type": "string",
-      "enum": ["range", "fixed", "extract"],
-      "default": "range",
-      "title": {
+  "upload": {
+    "multiple": false,
+    "maxFiles": 1,
+    "types": ["pdf"],
+    "maxSize": 52428800
+  },
+  "options": [
+    {
+      "name": "mode",
+      "type": "select",
+      "label": {
         "en": "Split Mode",
         "zh": "分割模式"
       },
-      "enumLabels": {
-        "range": { "en": "By Page Range", "zh": "按页码范围" },
-        "fixed": { "en": "Fixed Pages", "zh": "固定页数" },
-        "extract": { "en": "Extract Pages", "zh": "提取页面" }
-      },
-      "enumDescriptions": {
-        "range": { "en": "Split by specific page ranges (e.g., 1-3, 5, 8-10)", "zh": "按特定页码范围分割（例如：1-3, 5, 8-10）" },
-        "fixed": { "en": "Split into files with fixed number of pages", "zh": "分割为固定页数的文件" },
-        "extract": { "en": "Extract specific pages into one file", "zh": "提取特定页面到一个文件" }
-      },
-      "ui:widget": "radio-cards"
+      "choices": [
+        {
+          "value": "range",
+          "label": { "en": "By Page Range", "zh": "按页码范围" }
+        },
+        {
+          "value": "fixed",
+          "label": { "en": "Fixed Pages", "zh": "固定页数" }
+        },
+        {
+          "value": "extract",
+          "label": { "en": "Extract Pages", "zh": "提取页面" }
+        }
+      ],
+      "default": "range"
     },
-    "range": {
-      "type": "string",
-      "title": {
+    {
+      "name": "range",
+      "type": "text",
+      "label": {
         "en": "Page Range",
         "zh": "页码范围"
       },
@@ -43,16 +40,12 @@
         "en": "e.g., 1-3, 5, 8-10",
         "zh": "例如：1-3, 5, 8-10"
       },
-      "description": {
-        "en": "Enter comma-separated page ranges",
-        "zh": "输入用逗号分隔的页码范围"
-      },
-      "ui:showIf": { "mode": "range" }
+      "showIf": { "mode": "range" }
     },
-    "pagesPerFile": {
-      "type": "integer",
-      "minimum": 1,
-      "title": {
+    {
+      "name": "pagesPerFile",
+      "type": "number",
+      "label": {
         "en": "Pages Per File",
         "zh": "每个文件的页数"
       },
@@ -60,15 +53,12 @@
         "en": "e.g., 5",
         "zh": "例如：5"
       },
-      "description": {
-        "en": "Number of pages per output file",
-        "zh": "每个输出文件的页数"
-      },
-      "ui:showIf": { "mode": "fixed" }
+      "showIf": { "mode": "fixed" }
     },
-    "pages": {
-      "type": "string",
-      "title": {
+    {
+      "name": "pages",
+      "type": "text",
+      "label": {
         "en": "Pages to Extract",
         "zh": "要提取的页码"
       },
@@ -76,21 +66,12 @@
         "en": "e.g., 1, 3, 7",
         "zh": "例如：1, 3, 7"
       },
-      "description": {
-        "en": "Enter comma-separated page numbers",
-        "zh": "输入用逗号分隔的页码"
-      },
-      "ui:showIf": { "mode": "extract" }
+      "showIf": { "mode": "extract" }
     }
+  ],
+  "submitText": {
+    "en": "Split PDF",
+    "zh": "分割 PDF"
   },
-  "ui:submitButton": {
-    "text": {
-      "en": "Split PDF",
-      "zh": "分割 PDF"
-    },
-    "loadingText": {
-      "en": "Processing...",
-      "zh": "处理中..."
-    }
-  }
+  "outputType": "file"
 }
